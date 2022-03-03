@@ -16,13 +16,13 @@ const (
 	rot_spacing   = 0.03
 	R1            = 1
 	R2            = 2
-	K2            = 10
-	K1            = float64(screen_width) * K2 * 3 / (8 * (R1 + R2))
+	K2            = 20
+	K1            = 100
 	offset        = 30
-	delay         = 40
+	delay         = 20
 )
 
-func donut(K2 float64, R1 float64, R2 float64, t float64, p float64, A float64, B float64) ([3]float64, float64) {
+func donut(t float64, p float64, A float64, B float64) ([3]float64, float64) {
 	ct := math.Cos(t)
 	st := math.Sin(t)
 	cp := math.Cos(p)
@@ -40,7 +40,7 @@ func donut(K2 float64, R1 float64, R2 float64, t float64, p float64, A float64, 
 		cp*ct*sB - cA*ct*sp - sA*st + cB*(cA*st-ct*sA*sp)
 }
 
-func projection(K1 float64, K2 float64, X [3]float64) [2]float64 {
+func projection(X [3]float64) [2]float64 {
 	return [2]float64{
 		K1 * X[0] / (K2 + X[2]),
 		K1 * X[1] / (K2 + X[2]),
@@ -57,9 +57,9 @@ func main() {
 		var zbuffer [screen_width][screen_height]float64
 		for theta := 0.0; theta < 2*math.Pi; theta += theta_spacing {
 			for phi := 0.0; phi < 2*math.Pi; phi += phi_spacing {
-				var d, L = donut(K2, R1, R2, theta, phi, A, B)
+				var d, L = donut(theta, phi, A, B)
 				if L > 0 {
-					var point = projection(K1, K2, d)
+					var point = projection(d)
 					var x int = int(point[0] + offset)
 					var y int = int(point[1] + offset)
 					if x > 0 && x < screen_width {

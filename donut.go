@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"os"
-	"os/exec"
 	"time"
 )
 
@@ -88,12 +86,9 @@ func main() {
 				}
 			}
 		}
-		fmt.Print("\033[H\033[2J") // clear previous stdout
-		c := exec.Command("clear")
-		c.Stdout = os.Stdout
-		c.Run()
-		fmt.Printf(render_string)
 
+		fmt.Printf("\x1bc")
+		fmt.Printf(render_string)
 		A += rot_spacing
 		B += rot_spacing
 		time.Sleep(delay * time.Millisecond)

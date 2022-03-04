@@ -65,34 +65,30 @@ func main() {
 
 	for running {
 		var luminescence [screen_width][screen_height]int
+
+		for j := 0; j < screen_height; j++ {
+			for i := 0; i < screen_width; i++ {
+				termbox.SetCell(i*2-1, j, rune(" "[0]), termbox.ColorWhite, termbox.ColorDefault)
+				termbox.SetCell(i*2, j, rune(" "[0]), termbox.ColorWhite, termbox.ColorDefault)
+			}
+		}
+
 		var zbuffer [screen_width][screen_height]float64
 		for theta := 0.0; theta < 2*math.Pi; theta += theta_spacing {
 			for phi := 0.0; phi < 2*math.Pi; phi += phi_spacing {
 				var d, L = donut(theta, phi, A, B)
-				if L > 0 {
+				if L > -1 {
 					var point = projection(d)
 					var x int = int(point[0] + x_offset)
 					var y int = int(point[1] + y_offset)
-					if x > 0 && x < screen_width {
-						if y > 0 && y < screen_height {
-							if 1/(d[2]+K2) > zbuffer[x][y] {
-								zbuffer[x][y] = 1 / (d[2] + K2)
-								luminescence[x][y] = int(8 * L)
-							}
+					if 1/(d[2]+K2) > zbuffer[x][y] {
+						zbuffer[x][y] = 1 / (d[2] + K2)
+						luminescence[x][y] = int(8 * L)
+						if luminescence[x][y] >= 0 {
+							termbox.SetCell(x*2-1, y, rune(".,-~:;=!*#$@"[luminescence[x][y]]), termbox.ColorWhite, termbox.ColorDefault)
+							termbox.SetCell(x*2, y, rune(".,-~:;=!*#$@"[luminescence[x][y]]), termbox.ColorWhite, termbox.ColorDefault)
 						}
 					}
-				}
-			}
-		}
-
-		for j := 0; j < screen_height; j++ {
-			for i := 0; i < screen_width; i++ {
-				if luminescence[i][j] > 0 {
-					termbox.SetCell(i*2-1, j, rune(".,-~:;=!*#$@"[luminescence[i][j]]), termbox.ColorWhite, termbox.ColorDefault)
-					termbox.SetCell(i*2, j, rune(".,-~:;=!*#$@"[luminescence[i][j]]), termbox.ColorWhite, termbox.ColorDefault)
-				} else {
-					termbox.SetCell(i*2-1, j, rune(" "[0]), termbox.ColorWhite, termbox.ColorDefault)
-					termbox.SetCell(i*2, j, rune(" "[0]), termbox.ColorWhite, termbox.ColorDefault)
 				}
 			}
 		}

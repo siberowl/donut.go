@@ -19,8 +19,9 @@ const (
 	R2            = 2
 	K2            = 20
 	K1            = 100
-	offset        = 30
-	delay         = 20
+	x_offset      = 30
+	y_offset      = 20
+	delay         = 16
 )
 
 func donut(t float64, p float64, A float64, B float64) ([3]float64, float64) {
@@ -69,8 +70,8 @@ func main() {
 				var d, L = donut(theta, phi, A, B)
 				if L > 0 {
 					var point = projection(d)
-					var x int = int(point[0] + offset)
-					var y int = int(point[1] + offset)
+					var x int = int(point[0] + x_offset)
+					var y int = int(point[1] + y_offset)
 					if x > 0 && x < screen_width {
 						if y > 0 && y < screen_height {
 							if 1/(d[2]+K2) > zbuffer[x][y] {

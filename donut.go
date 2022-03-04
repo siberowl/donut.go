@@ -14,14 +14,15 @@ const (
 	screen_height = 60
 	theta_spacing = 0.07
 	phi_spacing   = 0.02
-	rot_spacing   = 0.03
+	delay         = 16
+	A_spacing     = delay * 0.07 / 40
+	B_spacing     = delay * 0.03 / 40
 	R1            = 1
 	R2            = 2
 	K2            = 20
 	K1            = 100
 	x_offset      = 30
 	y_offset      = 20
-	delay         = 16
 )
 
 func donut(t float64, p float64, A float64, B float64) ([3]float64, float64) {
@@ -97,8 +98,8 @@ func main() {
 		}
 
 		termbox.Flush()
-		A += rot_spacing
-		B += rot_spacing
+		A += A_spacing
+		B += B_spacing
 		time.Sleep(delay * time.Millisecond)
 	}
 

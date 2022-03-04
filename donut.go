@@ -37,7 +37,7 @@ func donut(t float64, p float64, A float64, B float64) ([3]float64, float64) {
 	cConst := R2 + R1*ct
 	return [3]float64{
 			cConst*(cB*cp+sA*sB*sp) - R1*cA*sB*st,
-			cConst*(cp*sB-cB*sA*sp) + R1*cA*cB*st,
+			-cConst*(cp*sB-cB*sA*sp) - R1*cA*cB*st,
 			cA*(R2+R1*ct)*sp + R1*sA*st,
 		},
 		cp*ct*sB - cA*ct*sp - sA*st + cB*(cA*st-ct*sA*sp)

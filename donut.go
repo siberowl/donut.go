@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"math"
+	"os"
 	"time"
+
+	termbox "github.com/nsf/termbox-go"
 )
 
 const (
@@ -49,8 +52,16 @@ func main() {
 	A := 0.0
 	B := 0.0
 
-	for {
-		var render_string string
+	running := true
+
+	err := termbox.Init()
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	for running {
 		var luminescence [screen_width][screen_height]int
 		var zbuffer [screen_width][screen_height]float64
 		for theta := 0.0; theta < 2*math.Pi; theta += theta_spacing {
@@ -72,25 +83,24 @@ func main() {
 			}
 		}
 
-		render_string = ""
 		for j := 0; j < screen_height; j++ {
 			for i := 0; i < screen_width; i++ {
-				if i < screen_width-1 {
-					if luminescence[i][j] > 0 {
-						render_string += string(".,-~:;=!*#$@"[luminescence[i][j]]) + string(".,-~:;=!*#$@"[luminescence[i][j]])
-					} else {
-						render_string += "  "
-					}
+				if luminescence[i][j] > 0 {
+					termbox.SetCell(i*2-1, j, rune(".,-~:;=!*#$@"[luminescence[i][j]]), termbox.ColorWhite, termbox.ColorDefault)
+					termbox.SetCell(i*2, j, rune(".,-~:;=!*#$@"[luminescence[i][j]]), termbox.ColorWhite, termbox.ColorDefault)
 				} else {
-					render_string += "\n"
+					termbox.SetCell(i*2-1, j, rune(" "[0]), termbox.ColorWhite, termbox.ColorDefault)
+					termbox.SetCell(i*2, j, rune(" "[0]), termbox.ColorWhite, termbox.ColorDefault)
 				}
 			}
 		}
 
-		fmt.Printf("\x1bc")
-		fmt.Printf(render_string)
+		termbox.Flush()
 		A += rot_spacing
 		B += rot_spacing
 		time.Sleep(delay * time.Millisecond)
 	}
+
+	termbox.Close()
+
 }
